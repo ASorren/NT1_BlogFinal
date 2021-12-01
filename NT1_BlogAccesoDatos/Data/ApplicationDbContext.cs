@@ -13,7 +13,6 @@ namespace NT1_Blog.AccesoDatos.Data
             : base(options)
         {
         }
-
         public DbSet<Categoria> Categoria { get; set; }
 
     }
