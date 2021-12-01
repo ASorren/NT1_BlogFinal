@@ -17,7 +17,7 @@ namespace NT1_BlogAccesoDatos.Data.Repository
             string includeProperties = null
             );
 
-        T getFirstOrDefault(
+        T GetFirstOrDefault(
             Expression<Func<T, bool>> filter = null,
             string includeProperties = null
             );

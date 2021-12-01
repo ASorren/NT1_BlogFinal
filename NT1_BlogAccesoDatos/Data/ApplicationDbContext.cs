@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using NT1_Blog.Models;
 
 namespace NT1_Blog.AccesoDatos.Data
 {
@@ -12,5 +13,8 @@ namespace NT1_Blog.AccesoDatos.Data
             : base(options)
         {
         }
+
+        public DbSet<Categoria> Categoria { get; set; }
+
     }
 }
