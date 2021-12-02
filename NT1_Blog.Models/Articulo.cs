@@ -15,6 +15,9 @@ namespace NT1_Blog.Models
         [Display(Name = "Nombre del artículo")]
         public string Nombre { get; set; }
 
+        [Required(ErrorMessage = "La descripcion es obligatoria")]
+        public string Descripcion { get; set; }
+
 
         [Display(Name = "Fecha de creación")]
         public string FechaCreacion { get; set; }
