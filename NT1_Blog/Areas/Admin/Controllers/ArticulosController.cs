@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NT1_Blog.Models.ViewModels;
 using NT1_BlogAccesoDatos.Data.Repository;
@@ -12,13 +14,26 @@ namespace NT1_Blog.Areas.Admin.Controllers
     public class ArticulosController : Controller
     {
         private readonly IWorkContainer _contenedorTrabajo;
+        private readonly IWebHostEnvironment _hostingEnvirnoment;
 
-        public ArticulosController(IWorkContainer contenedorTrabajo)
+        public ArticulosController(IWorkContainer contenedorTrabajo, IWebHostEnvironment hostingEnvirnoment)
         {
             _contenedorTrabajo = contenedorTrabajo;
+            _hostingEnvirnoment = hostingEnvirnoment;
         }
 
+        [HttpGet]
         public IActionResult Index()
+        {
+
+            return View();
+
+        }
+
+        //correccion error, para el Create necesitamos el viewModel de articulo, para sacar los nombres en la lista.
+
+        [HttpGet]
+        public IActionResult Create()
         {
             ArticuloVM artivm = new ArticuloVM()
             {
@@ -26,9 +41,62 @@ namespace NT1_Blog.Areas.Admin.Controllers
                 ListaCategorias = _contenedorTrabajo.Categoria.GetCategoryList()
             };
 
-           return View(artivm);
-          
+            return View(artivm);
+
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(ArticuloVM artiVM)
+        {
+            if (ModelState.IsValid)
+            {
+                string rutaPrincipal = _hostingEnvirnoment.WebRootPath;
+                var archivos = HttpContext.Request.Form.Files;
+                if (artiVM.Articulo.Id == 0)
+                {
+                    // nuevo articulo
+                    string nombreArchivo = Guid.NewGuid().ToString();
+                    var subidas = Path.Combine(rutaPrincipal, @"imagenes\articulos");
+                    var extension = Path.GetExtension(archivos[0].FileName);
+
+                    using (var fileStreams = new FileStream(Path.Combine(subidas, nombreArchivo + extension),FileMode.Create))
+                    {
+                        archivos[0].CopyTo(fileStreams);
+                    }
+
+                    artiVM.Articulo.UrlImagen = @"\imagenes\articulos\" + nombreArchivo + extension;
+                    artiVM.Articulo.FechaCreacion = DateTime.Now.ToString();
+                    _contenedorTrabajo.Articulo.Add(artiVM.Articulo);
+                    _contenedorTrabajo.Save();
+
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
+            // esto corrige el error que rompe cuando se envia vacio, asi lo hace obligatorio, se manda la lista de categorias.
+            artiVM.ListaCategorias = _contenedorTrabajo.Categoria.GetCategoryList();
+            return View(artiVM);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            ArticuloVM artivm = new ArticuloVM()
+            {
+                Articulo = new Models.Articulo(),
+                ListaCategorias = _contenedorTrabajo.Categoria.GetCategoryList()
+            };
+
+            if (id != null)
+            {
+                artivm.Articulo = _contenedorTrabajo.Articulo.Get(id.GetValueOrDefault());
+            }
+
+            return View(artivm);
+        }
+
+
 
         #region LLAMADAS A LA API
         [HttpGet]
