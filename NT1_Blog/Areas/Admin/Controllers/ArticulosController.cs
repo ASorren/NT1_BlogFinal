@@ -60,7 +60,7 @@ namespace NT1_Blog.Areas.Admin.Controllers
                     var subidas = Path.Combine(rutaPrincipal, @"imagenes\articulos");
                     var extension = Path.GetExtension(archivos[0].FileName);
 
-                    using (var fileStreams = new FileStream(Path.Combine(subidas, nombreArchivo + extension),FileMode.Create))
+                    using (var fileStreams = new FileStream(Path.Combine(subidas, nombreArchivo + extension), FileMode.Create))
                     {
                         archivos[0].CopyTo(fileStreams);
                     }
@@ -79,6 +79,7 @@ namespace NT1_Blog.Areas.Admin.Controllers
             return View(artiVM);
         }
 
+        // devuelve la vista
         [HttpGet]
         public IActionResult Edit(int? id)
         {
@@ -96,10 +97,12 @@ namespace NT1_Blog.Areas.Admin.Controllers
             return View(artivm);
         }
 
+
+        // se encarga de hacer el update
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(ArticuloVM artiVM)
-            
+
         {
 
             if (ModelState.IsValid)
@@ -113,6 +116,7 @@ namespace NT1_Blog.Areas.Admin.Controllers
                 if (archivos.Count() > 0)
                 {
                     // se edita imagen
+                    // toda esta merda se encarga de manejar el path de la foto, si la encuentra arma el path y cambia el que ya está por el update
                     string nombreArchivo = Guid.NewGuid().ToString();
                     var subidas = Path.Combine(rutaPrincipal, @"imagenes\articulos");
                     var extension = Path.GetExtension(archivos[0].FileName);
@@ -152,6 +156,30 @@ namespace NT1_Blog.Areas.Admin.Controllers
 
             return View();
         }
+
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            string rutaDirectorioPrincipal = _hostingEnvirnoment.WebRootPath;
+            var articuloDesdeDb = _contenedorTrabajo.Articulo.Get(id);
+            var rutaImagen = Path.Combine(rutaDirectorioPrincipal, articuloDesdeDb.UrlImagen.TrimStart('\\'));
+           
+            
+            if (System.IO.File.Exists(rutaImagen))
+            {
+                System.IO.File.Delete(rutaImagen);
+            }
+
+            if(articuloDesdeDb == null)
+            {
+                return Json(new {succes = false, message = "Error borrando articulo"});
+            }
+
+            _contenedorTrabajo.Articulo.Remove(articuloDesdeDb);
+            _contenedorTrabajo.Save();
+            return Json(new { succes = true, message = "Articulo borrado correctamente" });
+        }
+       
 
 
 

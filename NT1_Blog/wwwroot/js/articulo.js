@@ -43,7 +43,7 @@ function cargarDatatable() {
     });
 }
 
-// sweetAlert
+// sweetAlert para el delete 
 function Delete(url) {
     swal({
         title: "Esta seguro de borrar?",
