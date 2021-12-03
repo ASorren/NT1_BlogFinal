@@ -16,7 +16,7 @@ namespace NT1_Blog.Models
 
         [Required]
         [Display(Name = "Orden de visualizacion")]
-        public string Orden { get; set; }
+        public int Orden { get; set; }
 
 
     }
