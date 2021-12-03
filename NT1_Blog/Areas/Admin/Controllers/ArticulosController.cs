@@ -96,6 +96,63 @@ namespace NT1_Blog.Areas.Admin.Controllers
             return View(artivm);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(ArticuloVM artiVM)
+            
+        {
+
+            if (ModelState.IsValid)
+            {
+                string rutaPrincipal = _hostingEnvirnoment.WebRootPath;
+                var archivos = HttpContext.Request.Form.Files;
+
+                // obtenemos el articulo a validar por db
+                var articuloDesdeDb = _contenedorTrabajo.Articulo.Get(artiVM.Articulo.Id);
+
+                if (archivos.Count() > 0)
+                {
+                    // se edita imagen
+                    string nombreArchivo = Guid.NewGuid().ToString();
+                    var subidas = Path.Combine(rutaPrincipal, @"imagenes\articulos");
+                    var extension = Path.GetExtension(archivos[0].FileName);
+                    var nuevaExtension = Path.GetExtension(archivos[0].FileName);
+
+                    // obtenemos ruta de imagen
+                    var rutaImagen = Path.Combine(rutaPrincipal, articuloDesdeDb.UrlImagen.TrimStart('\\'));
+
+                    if (System.IO.File.Exists(rutaImagen))
+                    {
+                        System.IO.File.Delete(rutaImagen);
+                    }
+
+                    // subimos de nuevo el archivo
+                    using (var fileStreams = new FileStream(Path.Combine(subidas, nombreArchivo + nuevaExtension), FileMode.Create))
+                    {
+                        archivos[0].CopyTo(fileStreams);
+                    }
+
+                    artiVM.Articulo.UrlImagen = @"\imagenes\articulos\" + nombreArchivo + nuevaExtension;
+                    artiVM.Articulo.FechaCreacion = DateTime.Now.ToString();
+                    _contenedorTrabajo.Articulo.Update(artiVM.Articulo);
+                    _contenedorTrabajo.Save();
+
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    // si la imagen ya existe y no se reemplaza, debe conservar la ruta actual
+                    artiVM.Articulo.UrlImagen = articuloDesdeDb.UrlImagen;
+                }
+                _contenedorTrabajo.Articulo.Update(artiVM.Articulo);
+                _contenedorTrabajo.Save();
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View();
+        }
+
 
 
         #region LLAMADAS A LA API
