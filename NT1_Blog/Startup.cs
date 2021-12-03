@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NT1_Blog.AccesoDatos.Data;
+using NT1_BlogAccesoDatos.Data.Repository;
+using NT1_BlogAccesoDatos.Data;
 
 namespace NT1_Blog
 {
@@ -32,6 +34,9 @@ namespace NT1_Blog
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddScoped<IWorkContainer, WorkContainer>();
+
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
         }
