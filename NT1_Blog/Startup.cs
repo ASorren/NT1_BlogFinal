@@ -36,7 +36,6 @@ namespace NT1_Blog
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IWorkContainer, WorkContainer>();
-
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
         }
