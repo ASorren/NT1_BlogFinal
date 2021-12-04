@@ -144,11 +144,11 @@ namespace NT1_Blog.Areas.Admin.Controllers
             var objFromDb = _contenedorTrabajo.Slider.Get(id);
             if(objFromDb == null)
             {
-                return Json(new { succes = false, msessage = "Error borrando slider" });
+                return Json(new { success = false, msessage = "Error borrando slider" });
             }
             _contenedorTrabajo.Slider.Remove(objFromDb);
             _contenedorTrabajo.Save();
-            return Json(new { succes = true, message = "Slider borrado correctamente" });
+            return Json(new { success = true, message = "Slider borrado correctamente" });
         }
         #endregion
 
