@@ -54,9 +54,9 @@
                     <img src="@articulo.UrlImagen" class="img-thumbnail" width="100%" />
                     <div class=" card-body">
                         <h5 class="text-center"> @articulo.Nombre</h5>
-                        <p>@Articulo.FechaCreacion</p>
+                        <p>@articulo.FechaCreacion</p>
                         <!-- el boton este va a la vista de detalles, se tiene que llevar el ID para que entre bien-->
-                        <a asp-action="Details" class="btn btn-success" style="border-radius: 2px" asp-route="@articulo.Id"> Mas informacion </a>
+                         <a asp-action="Details" class="btn btn-success" style="border-radius:2px" asp-route-id="@articulo.Id">Más información</a>
                     </div>
 
                 </div>

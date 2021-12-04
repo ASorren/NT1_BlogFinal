@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NT1_Blog.Models;
-//agrega Diego - seccion 9
-using NT1_Blog.AccesoDatos.Data.Repository;
+//agrega Diego
+using NT1_BlogAccesoDatos.Data.Repository;
 using NT1_Blog.Models.ViewModels;
 
 namespace NT1_Blog.Controllers
@@ -15,9 +15,9 @@ namespace NT1_Blog.Controllers
     [Area("Cliente")]
     public class HomeController : Controller
     {
-        private readonly IContenedorTrabajo _contenedorTrabajo;
+        private readonly IWorkContainer _contenedorTrabajo;
 
-        public HomeController(IContenedorTrabajo contenedorTrabajo)
+        public HomeController(IWorkContainer contenedorTrabajo)
         {
             _contenedorTrabajo = contenedorTrabajo;
         }
