@@ -159,9 +159,10 @@ namespace NT1_Blog.Areas.Admin.Controllers
 
         [HttpDelete]
         public IActionResult Delete(int id)
+
         {
-            string rutaDirectorioPrincipal = _hostingEnvironment.WebRootPath;
             var articuloDesdeDb = _contenedorTrabajo.Articulo.Get(id);
+            string rutaDirectorioPrincipal = _hostingEnvironment.WebRootPath;
             var rutaImagen = Path.Combine(rutaDirectorioPrincipal, articuloDesdeDb.UrlImagen.TrimStart('\\'));
            
             
