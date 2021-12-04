@@ -20,16 +20,15 @@ function cargarDatatable() {
             {
                 "data": "id",
                 "render": function (data) {
-                    return `  <div class="text-center">
-                               <a href='/Admin/Articulos/Edit/${data}' class='btn btn-succes text-white' style='cursor:pointer; width:100px'> Editar
-                                </a>
-                                &nbsp;
-                              <div class="text-center">
-                                <a onclick=Delete("/Admin/Articulos/Delete/${data}") 'class='btn btn-danger text-white' style='cursor:pointer; width:100px'> Eliminar
-                                </a>
-                                &nbsp;
-
-                                `;
+                    return `<div class="text-center">
+                            <a href='/Admin/Articulos/Edit/${data}' class='btn btn-success text-white' style='cursor:pointer; width:100px;'>
+                            <i class='fas fa-edit'></i> Editar
+                            </a>
+                            &nbsp;
+                            <a onclick=Delete("/Admin/Articulos/Delete/${data}") class='btn btn-danger text-white' style='cursor:pointer; width:100px;'>
+                            <i class='fas fa-trash-alt'></i> Borrar
+                            </a>
+                            `;
                 },"width":"30%"
             }
 
@@ -61,7 +60,7 @@ function Delete(url) {
             succes: function (data) {
                 if (data.succes) {
                     toastr.succes(data.message);
-                    dataTable.reload();
+                    dataTable.ajax.reload();
                 }
                 else {
                     toaster.error(data.message);

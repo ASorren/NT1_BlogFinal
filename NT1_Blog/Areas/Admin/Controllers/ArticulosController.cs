@@ -14,12 +14,12 @@ namespace NT1_Blog.Areas.Admin.Controllers
     public class ArticulosController : Controller
     {
         private readonly IWorkContainer _contenedorTrabajo;
-        private readonly IWebHostEnvironment _hostingEnvirnoment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
         public ArticulosController(IWorkContainer contenedorTrabajo, IWebHostEnvironment hostingEnvirnoment)
         {
             _contenedorTrabajo = contenedorTrabajo;
-            _hostingEnvirnoment = hostingEnvirnoment;
+            _hostingEnvironment = hostingEnvirnoment;
         }
 
         [HttpGet]
@@ -51,7 +51,7 @@ namespace NT1_Blog.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                string rutaPrincipal = _hostingEnvirnoment.WebRootPath;
+                string rutaPrincipal = _hostingEnvironment.WebRootPath;
                 var archivos = HttpContext.Request.Form.Files;
                 if (artiVM.Articulo.Id == 0)
                 {
@@ -107,7 +107,7 @@ namespace NT1_Blog.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                string rutaPrincipal = _hostingEnvirnoment.WebRootPath;
+                string rutaPrincipal = _hostingEnvironment.WebRootPath;
                 var archivos = HttpContext.Request.Form.Files;
 
                 // obtenemos el articulo a validar por db
@@ -160,7 +160,7 @@ namespace NT1_Blog.Areas.Admin.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            string rutaDirectorioPrincipal = _hostingEnvirnoment.WebRootPath;
+            string rutaDirectorioPrincipal = _hostingEnvironment.WebRootPath;
             var articuloDesdeDb = _contenedorTrabajo.Articulo.Get(id);
             var rutaImagen = Path.Combine(rutaDirectorioPrincipal, articuloDesdeDb.UrlImagen.TrimStart('\\'));
            
@@ -172,12 +172,12 @@ namespace NT1_Blog.Areas.Admin.Controllers
 
             if(articuloDesdeDb == null)
             {
-                return Json(new {succes = false, message = "Error borrando articulo"});
+                return Json(new {success = false, message = "Error borrando articulo"});
             }
 
             _contenedorTrabajo.Articulo.Remove(articuloDesdeDb);
             _contenedorTrabajo.Save();
-            return Json(new { succes = true, message = "Articulo borrado correctamente" });
+            return Json(new { success = true, message = "Articulo borrado correctamente" });
         }
        
 
