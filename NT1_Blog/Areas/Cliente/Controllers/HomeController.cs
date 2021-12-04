@@ -6,33 +6,42 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NT1_Blog.Models;
+//agrega Diego - seccion 9
+using NT1_Blog.AccesoDatos.Data.Repository;
+using NT1_Blog.Models.ViewModels;
 
 namespace NT1_Blog.Controllers
 {
     [Area("Cliente")]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IContenedorTrabajo _contenedorTrabajo;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IContenedorTrabajo contenedorTrabajo)
         {
-            _logger = logger;
+            _contenedorTrabajo = contenedorTrabajo;
         }
 
         public IActionResult Index()
         {
-            return View();
+            //se llama al homeVM, para poder mostrar lo que contiene
+            HomeVM homeVm = new HomeVM()
+            {
+                //llamamos al slider y al articulo
+                Slider = _contenedorTrabajo.Slider.GetAll(),
+                ListaArticulos = _contenedorTrabajo.Articulo.GetAll()
+            };
+            return View(homeVm);
         }
 
-        public IActionResult Privacy()
+        //recibe el id del articulo dese el index.cshtml de Cliente/View/Home. Para
+        //pasarcelo tenemos que hacer una lambda(?) que devuelve el Articulo de la BD cuyo Id es 
+        // igual al id pasado por parametro
+        public IActionResult Details(int id)
         {
-            return View();
+            var articulosDesdeDb = _contenedorTrabajo.Articulo.GetFirstOrDefault(art => art.Id == id);
+            return View(articulosDesdeDb);
         }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿@{
+﻿@model NT1_Blog.Models.ViewModels.HomeVM
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -6,3 +7,65 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<!-- INICIA SLIDER bootstrap-->
+<header>
+    <div id="carouselExampleIndicateors" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            @{ int cont = 0;}
+            @foreach (var item in Model.Slider)
+            {
+                var itemDinamico = cont++ == 0 ? "item active" : "item";
+                <div class="carousel-item @itemDinamico">
+                    <img src="@Url.Content(item.UrlImagen)" />
+                    <h1 class="text-dark text-center">@Html.Raw(item.Nombre)</h1>
+
+                </div>
+            }
+        </div>
+        <!-- carrusel de fotos next y prev-->
+        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </a>
+    </div>
+</header>
+<!-- FIN SLIDER  bootstrap-->
+<!-- imagen de fondo - css y bootstrap-->
+<div class="row fondoTitulo mt-5">
+    <div class="col-sm-12 py-5">
+        <h1 class="text-center text-white"> Ultimos cursos y tutoriales</h1>
+    </div>
+</div>
+
+<!-- articulos - css y bootstrap-->
+@if (Model.ListaArticulos.Count() > 0)
+{
+    <hr/>
+    <div class="row">
+        @foreach (var articulo in Model.ListaArticulos.OrderBy(listita => listita.Id))
+        {
+            <div class="col-4">
+                <div class="card">
+                    <img src="@articulo.UrlImagen" class="img-thumbnail" width="100%" />
+                    <div class=" card-body">
+                        <h5 class="text-center"> @articulo.Nombre</h5>
+                        <p>@Articulo.FechaCreacion</p>
+                        <!-- el boton este va a la vista de detalles, se tiene que llevar el ID para que entre bien-->
+                        <a asp-action="Details" class="btn btn-success" style="border-radius: 2px" asp-route="@articulo.Id"> Mas informacion </a>
+                    </div>
+
+                </div>
+            </div>
+        }
+
+    </div>
+}
+else
+{
+    <p> No hay articulos</p>
+}

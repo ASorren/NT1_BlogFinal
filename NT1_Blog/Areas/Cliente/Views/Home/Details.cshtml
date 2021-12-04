@@ -1,0 +1,37 @@
+﻿@model NT1_Blog.Models.Articulo
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Views_Shared__Layout.cshtml";
+}
+
+<h1>Details</h1>
+<br />
+<br />
+
+<div class="container">
+    <div class="card">
+        <div class="card-header bg-light text-light ml-0 row comtainer">
+            <div class="col-12 col-md-6">
+                <h4 class="text-primary">@Model.Nombre</h4>
+            </div>
+            <div class="col-12 col-md-6">
+                <h4 class="text-muted">@Model.FechaCreacion</h4>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="col-12">
+                <img src="@Model.UrlImagen" =" class="img-thumbnail" mx-auto d-block alt="imagen no encontrada " />
+                <p class="text-secondary">@Html.Raw(Model.Descripcion)</p>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-12 col-md-6 pb-1">
+                    <a asp-action="Index" class="btn btn-succes btn-sm">Volver a la lista</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
