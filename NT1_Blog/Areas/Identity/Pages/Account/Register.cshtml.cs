@@ -57,9 +57,23 @@ namespace NT1_Blog.Areas.Identity.Pages.Account
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
+            [Display(Name = "Confimar Password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+
+            
+            public string Nombre { get; set; }
+
+            public string Direccion { get; set; }
+            
+            public string Ciudad { get; set; }
+
+            public string Pais { get; set; }
+            
+            public string PhoneNumber { get; set; }
+
+
         }
 
         public async Task OnGetAsync(string returnUrl = null)
