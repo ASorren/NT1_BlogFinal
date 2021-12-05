@@ -9,8 +9,8 @@ namespace NT1_BlogAccesoDatos.Data.Repository
 
         ICategoriaRepository Categoria { get; }
         IArticuloRepository Articulo { get; }
-        ISliderRepository Slider { get; }
-        //Further Repositories to be added like Categoria above
+        ISliderRepository Slider { get; }        
+        IUsuarioRepository Usuario { get; }
 
         void Save();
     }
