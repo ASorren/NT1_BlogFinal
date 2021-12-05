@@ -25,5 +25,29 @@ namespace NT1_Blog.Areas.Admin.Controllers
             var usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             return View(_contenedorTrabajo.Usuario.GetAll(u => u.Id != usuarioActual.Value));
         }
+
+        public IActionResult Bloquear(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            _contenedorTrabajo.Usuario.BloqueaUsuario(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Desbloquear(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            _contenedorTrabajo.Usuario.DesbloqueaUsuario(id);
+            return RedirectToAction(nameof(Index));
+        }
+
     }
+
 }
