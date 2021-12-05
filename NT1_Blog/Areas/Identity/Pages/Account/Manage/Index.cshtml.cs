@@ -6,22 +6,24 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using NT1_Blog.Models;
 
 namespace NT1_Blog.Areas.Identity.Pages.Account.Manage
 {
     public partial class IndexModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public IndexModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
         }
 
+        [Display(Name = "Email De Usuario")]
         public string Username { get; set; }
 
         [TempData]
@@ -32,12 +34,27 @@ namespace NT1_Blog.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
+           
+            public string Nombre { get; set; }
+
+            public string Direccion { get; set; }
+
+           
+            public string Ciudad { get; set; }
+
+           [Display(Name ="País")]
+            public string Pais { get; set; }
+
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+
         }
 
-        private async Task LoadAsync(IdentityUser user)
+        /*
+        private async Task LoadAsync(ApplicationUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
@@ -46,9 +63,13 @@ namespace NT1_Blog.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Nombre = user.Nombre,
+                Ciudad = user.Ciudad,
+                Direccion = user.Direccion,
+                Pais = user.Pais
             };
-        }
+        }*/
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -58,7 +79,21 @@ namespace NT1_Blog.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await LoadAsync(user);
+            var userName = await _userManager.GetUserNameAsync(user);
+            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+
+            Username = userName;
+
+            Input = new InputModel
+            {
+                PhoneNumber = phoneNumber,
+                Nombre = user.Nombre,
+                Ciudad = user.Ciudad,
+                Direccion = user.Direccion,
+                Pais = user.Pais
+            };
+
+            //await LoadAsync(user);
             return Page();
         }
 
@@ -70,11 +105,11 @@ namespace NT1_Blog.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            if (!ModelState.IsValid)
-            {
-                await LoadAsync(user);
-                return Page();
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    await LoadAsync(user);
+            //    return Page();
+            //}
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
@@ -87,8 +122,15 @@ namespace NT1_Blog.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            user.Nombre = Input.Nombre;
+            user.PhoneNumber = Input.PhoneNumber;
+            user.Ciudad = Input.Ciudad;
+            user.Direccion = Input.Direccion;
+            user.Pais = Input.Pais;
+
+            await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Su Perfil se actualizo con exito";
             return RedirectToPage();
         }
     }
