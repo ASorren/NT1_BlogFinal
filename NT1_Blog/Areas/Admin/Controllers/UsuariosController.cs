@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NT1_BlogAccesoDatos.Data.Repository;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace NT1_Blog.Areas.Admin.Controllers
 {
+    [Authorize]
     [Area("Admin")]
     public class UsuariosController : Controller
     {
