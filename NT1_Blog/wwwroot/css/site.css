@@ -71,9 +71,15 @@ body {
 }
 
 /*Estilos personales*/
-.fondoTitulo{
+.fondoTitulo {
     opacity: 0.5;
-    background-color: #000;
-    background: url('../imagenes/seleccionarImagen--------estilo con una imagen de fondo ;D ---------');
+    background-color: #000000;
+    background: url('../imagenes/programmingBackground.jpeg');
     padding: 40px 0 40px 0;
+}
+
+.carousel slide {
+    margin: auto;
+    display: flex;
+    align-items: center;
 }
