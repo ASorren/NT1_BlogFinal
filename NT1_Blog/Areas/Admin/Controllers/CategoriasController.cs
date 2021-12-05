@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NT1_Blog.Models;
 using NT1_BlogAccesoDatos.Data.Repository;
 
 namespace NT1_Blog.Areas.Admin
-{
+{   
+    [Authorize]
     [Area("Admin")] // Solo accede el admin 
     public class CategoriasController : Controller
     {
