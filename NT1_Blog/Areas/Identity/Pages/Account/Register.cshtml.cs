@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using NT1_Blog.Models;
+using NT1_BlogUtilidades;
 
 namespace NT1_Blog.Areas.Identity.Pages.Account
 {
@@ -23,17 +25,21 @@ namespace NT1_Blog.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
+            //asignaciones
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         [BindProperty]
@@ -88,12 +94,49 @@ namespace NT1_Blog.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser { 
+                    UserName = Input.Email, 
+                    Email = Input.Email,
+                    Nombre = Input.Nombre,
+                    Ciudad = Input.Ciudad,
+                    Direccion = Input.Direccion,
+                    Pais = Input.Pais,
+                    PhoneNumber = Input.PhoneNumber,
+                    EmailConfirmed = true};
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    //aca se valida si los roles existen, sino existen todavia los crea.
+                    //solo entra aca la primera vez
+                    if (!await _roleManager.RoleExistsAsync(CNT.Admin))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(CNT.Admin));
+                        await _roleManager.CreateAsync(new IdentityRole(CNT.Usuario));
+                    }
 
+                    //obtener el rol seleccionado
+                    string rol = Request.Form["radUsuarioRol"].ToString();
+
+                    //validamos si el rol seleccionado es Admin y si lo es lo agregamos --8.20
+                    if (rol == CNT.Admin)
+                    {
+                        await _userManager.AddToRoleAsync(user, CNT.Admin);
+                    } 
+                    else
+                    {
+                        if (rol == CNT.Usuario)
+                        {
+                            await _userManager.AddToRoleAsync(user, CNT.Usuario);
+                        }
+                    }
+
+                    _logger.LogInformation("Usuario creado con éxito.");
+
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
+
+                    /*
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
@@ -114,6 +157,7 @@ namespace NT1_Blog.Areas.Identity.Pages.Account
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }
+                    */
                 }
                 foreach (var error in result.Errors)
                 {

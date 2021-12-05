@@ -14,6 +14,8 @@ using Microsoft.Extensions.Hosting;
 using NT1_Blog.AccesoDatos.Data;
 using NT1_BlogAccesoDatos.Data.Repository;
 using NT1_BlogAccesoDatos.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using NT1_BlogUtilidades;
 
 namespace NT1_Blog
 {
@@ -32,8 +34,10 @@ namespace NT1_Blog
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
+            services.AddSingleton<IEmailSender, EmailSender>();
 
             services.AddScoped<IWorkContainer, WorkContainer>();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
