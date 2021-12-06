@@ -9,6 +9,7 @@ using NT1_Blog.Models;
 //agrega Diego
 using NT1_BlogAccesoDatos.Data.Repository;
 using NT1_Blog.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NT1_Blog.Controllers
 {
@@ -37,6 +38,7 @@ namespace NT1_Blog.Controllers
         //recibe el id del articulo dese el index.cshtml de Cliente/View/Home. Para
         //pasarcelo tenemos que hacer una lambda(?) que devuelve el Articulo de la BD cuyo Id es 
         // igual al id pasado por parametro
+        [Authorize]
         public IActionResult Details(int id)
         {
             var articulosDesdeDb = _contenedorTrabajo.Articulo.GetFirstOrDefault(art => art.Id == id);
